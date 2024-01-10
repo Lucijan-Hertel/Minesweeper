@@ -1,5 +1,5 @@
 Main Game:
-It is completely playable but sometimes not solvable without guessing. I am trying to solve that.
+It is basically playable but sometimes not solvable without guessing. I am trying to solve that.
 
 Cheats / Developer Mode:
 With Left ALT you can see specific information about every field when you hover it.
