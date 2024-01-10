@@ -1,0 +1,18 @@
+C:\Users\lucij\source\repos\MineSweeper 2.0\MineSweeper 2.0\bin\Release\net7.0\app.publish\MineSweeper 2.0.exe
+C:\Users\lucij\source\repos\MineSweeper 2.0\MineSweeper 2.0\bin\Release\net7.0\app.publish\MineSweeper 2.0.dll
+C:\Users\lucij\source\repos\MineSweeper 2.0\MineSweeper 2.0\bin\Release\net7.0\app.publish\MineSweeper 2.0.deps.json
+C:\Users\lucij\source\repos\MineSweeper 2.0\MineSweeper 2.0\bin\Release\net7.0\app.publish\MineSweeper 2.0.runtimeconfig.json
+C:\Users\lucij\source\repos\MineSweeper 2.0\MineSweeper 2.0\bin\Release\net7.0\app.publish\MineSweeper 2.0.pdb
+C:\Users\lucij\source\repos\MineSweeper 2.0\MineSweeper 2.0\bin\Release\net7.0\app.publish\Microsoft.Toolkit.HighPerformance.dll
+C:\Users\lucij\source\repos\MineSweeper 2.0\MineSweeper 2.0\bin\Release\net7.0\app.publish\Raylib-cs.dll
+C:\Users\lucij\source\repos\MineSweeper 2.0\MineSweeper 2.0\bin\Release\net7.0\app.publish\Raylib-CsLo.dll
+C:\Users\lucij\source\repos\MineSweeper 2.0\MineSweeper 2.0\bin\Release\net7.0\app.publish\runtimes\win-x86\native\raylib.dll
+C:\Users\lucij\source\repos\MineSweeper 2.0\MineSweeper 2.0\bin\Release\net7.0\app.publish\runtimes\linux-x64\native\libraylib.so
+C:\Users\lucij\source\repos\MineSweeper 2.0\MineSweeper 2.0\bin\Release\net7.0\app.publish\runtimes\linux-x64\native\readme.md
+C:\Users\lucij\source\repos\MineSweeper 2.0\MineSweeper 2.0\bin\Release\net7.0\app.publish\runtimes\osx-arm64\native\libraylib.dylib
+C:\Users\lucij\source\repos\MineSweeper 2.0\MineSweeper 2.0\bin\Release\net7.0\app.publish\runtimes\osx-arm64\native\readme.md
+C:\Users\lucij\source\repos\MineSweeper 2.0\MineSweeper 2.0\bin\Release\net7.0\app.publish\runtimes\osx-x64\native\libraylib.dylib
+C:\Users\lucij\source\repos\MineSweeper 2.0\MineSweeper 2.0\bin\Release\net7.0\app.publish\runtimes\osx-x64\native\readme.md
+C:\Users\lucij\source\repos\MineSweeper 2.0\MineSweeper 2.0\bin\Release\net7.0\app.publish\runtimes\win-x64\native\raylib.dll
+C:\Users\lucij\source\repos\MineSweeper 2.0\MineSweeper 2.0\bin\Release\net7.0\app.publish\runtimes\win-x64\native\raylib.pdb
+C:\Users\lucij\source\repos\MineSweeper 2.0\MineSweeper 2.0\bin\Release\net7.0\app.publish\runtimes\win-x86\native\needs-pr.txt

@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "dgSpecHash": "PsIPVWpbP9L++zaiNr9hc/iWpZVm1xKkN5farTCJfKMvH6LOYjUIR0exIi1qkWBcUJQmvGJRKQw0u0WJ06A9+g==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\lucij\\Downloads\\MineSweeper 1\\MineSweeper\\MineSweeper 2.0\\MineSweeper 2.0.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\lucij\\.nuget\\packages\\microsoft.toolkit.highperformance\\7.1.2\\microsoft.toolkit.highperformance.7.1.2.nupkg.sha512",
+    "C:\\Users\\lucij\\.nuget\\packages\\raylib\\5.0.0\\raylib.5.0.0.nupkg.sha512",
+    "C:\\Users\\lucij\\.nuget\\packages\\raylib-cs\\5.0.0\\raylib-cs.5.0.0.nupkg.sha512",
+    "C:\\Users\\lucij\\.nuget\\packages\\raylib-cslo\\4.2.0.9\\raylib-cslo.4.2.0.9.nupkg.sha512",
+    "C:\\Users\\lucij\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512"
+  ],
+  "logs": []
+}
