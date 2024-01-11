@@ -14,6 +14,7 @@ class Program
         const int Coloums = 25;
         const int Rows = 25;
         int bombCount = 100;
+        int LoopedTrough = 0;
         double Time = 0;
         int HintsUsed = 3;
         int fieldsNotVisable = 0;
@@ -85,7 +86,7 @@ class Program
 
                 isClickedFieldZero(fields, mousePosition, r);
 
-                Help(ref HintsUsed, r, fields, x, y);
+                Help(ref HintsUsed, r, fields, x, y, ref LoopedTrough);
 
                 if (gameEnded)
                 {
@@ -116,6 +117,7 @@ class Program
                 GameOver(ref Time, CellWidth, mousePosition, ref playing, ref gameEnded, ref declared, ref gameWon);
                 Raylib.ClearBackground(Color.BLUE);
                 KIactive = false;
+                HintsUsed = 3;
             }
 
             if (gamemode == Gamemode.win)
@@ -124,6 +126,7 @@ class Program
                 Win(ref Time, CellWidth, mousePosition, ref playing, ref gameEnded, ref declared, ref gameWon);
                 Raylib.ClearBackground(Color.BLUE);
                 KIactive = false;
+                HintsUsed = 3;
             }
 
             if (gotOutputed == false)
@@ -204,15 +207,17 @@ class Program
 
     }
 
-    public static void Help (ref int HintsUsed, Random r, Field[,] fields, int x, int y)
+    public static void Help (ref int HintsUsed, Random r, Field[,] fields, int x, int y, ref int LoopedTrough)
     {
         if (HintsUsed != 0 && Raylib.IsKeyPressed(KeyboardKey.KEY_H))
         {
+            if (LoopedTrough < 20)
+            { 
             x = r.Next(24);
             y = r.Next(24);
 
-            if (!fields[x, y].visable && fields[x, y].isZeroBombs)
-            {
+                if (!fields[x, y].visable && fields[x, y].isZeroBombs)
+                {
                 fields[x, y].visable = true;
 
                 for (int dx = -1; dx <= 1; dx++)
@@ -227,10 +232,12 @@ class Program
                         {
                             fields[x + dx, y + dy].visable = true;
                             fields[x + dx, y + dy].colour = Color.DARKGREEN;
+                            
 
                             if (fields[x + dx, y + dy].isZeroBombs && !fields[x + dx, y + dy].alreadyChecked)
                             {
                                 fields[x + dx, y + dy].alreadyChecked = true;
+                                LoopedTrough = 0;
                                 Beginning(fields, r, x + dx, y + dy, false);
                             }
                         }
@@ -238,12 +245,67 @@ class Program
                 }
 
                 HintsUsed--;
-
+                }
+                else
+                {
+                    if (LoopedTrough < 20)
+                    {
+                        LoopedTrough++;
+                        Help(ref HintsUsed, r, fields, x, y, ref LoopedTrough);
+                    }
+                }
             }
 
             else
             {
-                Help(ref HintsUsed, r, fields, x, y);
+                HelpWithoutZeros(ref HintsUsed, r, fields, x, y);
+            }
+        }
+    }
+
+    public static void HelpWithoutZeros(ref int HintsUsed, Random r, Field[,] fields, int x, int y)
+    {
+        bool OneFieldHintUsed = false;
+        bool IsUsed = false;
+
+        if (HintsUsed != 0)
+        {
+            x = r.Next(25);
+            y = r.Next(25);
+
+            if (!fields[x, y].visable && !fields[x, y].isBomb)
+            {
+                for (int dx = -1; dx <= 1; dx++)
+                {
+                    for (int dy = -1; dy <= 1; dy++)
+                    {
+                        if ((x + dx < 0 || y + dy < 0) || (x + dx > 24 || y + dy > 24) || OneFieldHintUsed)
+                        {
+                        }
+                        else if (fields[x + dx, y + dy].visable)
+                        {
+                            fields[x, y].visable = true;
+                            fields[x, y].colour = Color.DARKGREEN;
+                            fields[x, y].gotClicked = true;
+                            OneFieldHintUsed = true;
+                            Console.Write(x + dx);
+                            Console.Write(y + dy);
+                            Console.WriteLine();
+                            HintsUsed--;
+                            IsUsed = true;
+                        }
+                        else if (!fields[x, y].visable && fields[x, y].isBomb && fields[x + dx, y + dy].visable)
+                        {
+                            fields[x, y].bombDetected = true;
+                        }
+                    }
+                }
+                
+                Console.WriteLine(HintsUsed);
+            }
+            if (!IsUsed)
+            {
+                HelpWithoutZeros(ref HintsUsed, r, fields, x, y);
             }
         }
     }
