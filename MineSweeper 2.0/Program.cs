@@ -15,6 +15,8 @@ class Program
         const int Rows = 25;
         int bombCount = 100;
         int LoopedTrough = 0;
+        int x = 0;
+        int y = 0;
         double Time = 0;
         int HintsUsed = 3;
         int fieldsNotVisable = 0;
@@ -37,9 +39,6 @@ class Program
         Field field = new Field(false, false, Color.DARKGRAY, false, false, false, false, false, 0);
         Gamemode gamemode = new Gamemode();
         Stopwatch stopwatch = new Stopwatch();
-
-        int x = r.Next(24);
-        int y = r.Next(24);
 
         // Lists
         List<Field> allFields = new List<Field>();
@@ -69,12 +68,17 @@ class Program
 
                 if (declared == false)
                 {
+                    x = r.Next(24);
+                    y = r.Next(24);
                     DeclareFields(fields, CellWidth);
                     RandomizeBombs(r, fields, bombCount);
-                    declared = true;
                     CheckIfZero(fields);
-                    Beginning(fields, r, x, y, true);
-
+                    Beginning(fields, r, ref x, ref y, true);
+                    KIactive = true;
+                    for (int i = 0; i < 20; i++)
+                    {
+                        ShouldKIStart(fields, ref fieldsNotVisable, ref KIactive);
+                    }
                 }
 
                 DrawFields(fields, CellWidth, mousePosition, TextColour, ref surroundedBombs);
@@ -87,6 +91,15 @@ class Program
                 isClickedFieldZero(fields, mousePosition, r);
 
                 Help(ref HintsUsed, r, fields, x, y, ref LoopedTrough);
+
+                // CheckIfZero(fields);
+
+                DrawGrid(CellWidth, Coloums, Rows, GridColor);
+
+                if (bombCount == 0)
+                {
+                    CheckIfBombsAreRightDetected(fields, ref gameEnded, bombCount);
+                }
 
                 if (gameEnded)
                 {
@@ -102,13 +115,27 @@ class Program
                     stopwatch.Restart();
                 }
 
-                // CheckIfZero(fields);
-
-                DrawGrid(CellWidth, Coloums, Rows, GridColor);
-
-                if (bombCount == 0)
+                if (declared == false)
                 {
-                    CheckIfBombsAreRightDetected(fields, ref gameEnded, bombCount);
+                    if (gamemode == Gamemode.win)
+                    {
+                        gamemode = Gamemode.playing;
+                        declared = true;
+                        KIactive = false;
+                        gameWon = false;
+                        for (int i = 0; i < 25; i++)
+                        {
+                            for (int j = 0; j < 25; j++)
+                            {
+                                fields[i, j].gotClicked = false;
+                                fields[i, j].visable = false;
+                                fields[i, j].bombDetected = false;
+                                fields[i, j].alreadyChecked = false;
+                                fields[i, j].colour = Color.DARKGRAY;
+                            }
+                        }
+                        Beginning(fields, r, ref x, ref y, false);
+                    }
                 }
             }
 
@@ -238,7 +265,9 @@ class Program
                             {
                                 fields[x + dx, y + dy].alreadyChecked = true;
                                 LoopedTrough = 0;
-                                Beginning(fields, r, x + dx, y + dy, false);
+                                int xx = x + dx;
+                                int yy = y + dy;
+                                Beginning(fields, r, ref xx, ref yy, false);
                             }
                         }
                     }
@@ -395,7 +424,7 @@ class Program
         }
     }
 
-    public static void Beginning(Field[,] fields, Random r, int x, int y, bool firsttime)
+    public static void Beginning(Field[,] fields, Random r, ref int x, ref int y, bool firsttime)
     {
 
         for (int i = 0; i < 24; i++)
@@ -421,7 +450,9 @@ class Program
                             if (fields[x + dx, y + dy].isZeroBombs && !fields[x + dx, y + dy].alreadyChecked)
                             {
                                 fields[x + dx, y + dy].alreadyChecked = true;
-                                Beginning(fields, r, x + dx, y + dy, false);
+                                int xx = x + dx;
+                                int yy = y + dy;
+                                Beginning(fields, r, ref xx, ref yy, false);
                             }
                         }
                     }
@@ -442,7 +473,9 @@ class Program
         {
             if (fields[(int)mousePosition.X, (int)mousePosition.Y].isZeroBombs && Raylib.IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_LEFT))
             {
-                Beginning(fields, r, (int)mousePosition.X, (int)mousePosition.Y, false);
+                int xx = (int)mousePosition.X;
+                int yy = (int)mousePosition.Y;
+                Beginning(fields, r, ref xx, ref yy, false);
             }
         }
     }
@@ -575,10 +608,15 @@ class Program
 
     public static void ShouldKIStart(Field[,] fields, ref int fieldsNotVisable, ref bool KIactive)
     {
-        if (Raylib.IsKeyPressed(KeyboardKey.KEY_K))
+        if (Raylib.IsKeyPressed(KeyboardKey.KEY_K) && KIactive == false)
         {
             KIactive = true;
         }
+        else if (Raylib.IsKeyPressed(KeyboardKey.KEY_K) && KIactive == true)
+        {
+            KIactive = false;
+        }
+
         
         if (KIactive == true)
         {

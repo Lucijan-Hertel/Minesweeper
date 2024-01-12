@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\lucij\\Downloads\\Minesweeper\\MineSweeper 1\\MineSweeper\\MineSweeper 2.0\\MineSweeper 2.0.csproj": {}
+    "C:\\Users\\lucij\\Downloads\\Minesweeper\\Minesweeper\\MineSweeper 1\\MineSweeper\\MineSweeper 2.0\\MineSweeper 2.0.csproj": {}
   },
   "projects": {
-    "C:\\Users\\lucij\\Downloads\\Minesweeper\\MineSweeper 1\\MineSweeper\\MineSweeper 2.0\\MineSweeper 2.0.csproj": {
+    "C:\\Users\\lucij\\Downloads\\Minesweeper\\Minesweeper\\MineSweeper 1\\MineSweeper\\MineSweeper 2.0\\MineSweeper 2.0.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\lucij\\Downloads\\Minesweeper\\MineSweeper 1\\MineSweeper\\MineSweeper 2.0\\MineSweeper 2.0.csproj",
+        "projectUniqueName": "C:\\Users\\lucij\\Downloads\\Minesweeper\\Minesweeper\\MineSweeper 1\\MineSweeper\\MineSweeper 2.0\\MineSweeper 2.0.csproj",
         "projectName": "MineSweeper 2.0",
-        "projectPath": "C:\\Users\\lucij\\Downloads\\Minesweeper\\MineSweeper 1\\MineSweeper\\MineSweeper 2.0\\MineSweeper 2.0.csproj",
+        "projectPath": "C:\\Users\\lucij\\Downloads\\Minesweeper\\Minesweeper\\MineSweeper 1\\MineSweeper\\MineSweeper 2.0\\MineSweeper 2.0.csproj",
         "packagesPath": "C:\\Users\\lucij\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\lucij\\Downloads\\Minesweeper\\MineSweeper 1\\MineSweeper\\MineSweeper 2.0\\obj\\",
+        "outputPath": "C:\\Users\\lucij\\Downloads\\Minesweeper\\Minesweeper\\MineSweeper 1\\MineSweeper\\MineSweeper 2.0\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
