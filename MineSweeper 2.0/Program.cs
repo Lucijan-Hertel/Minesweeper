@@ -10,29 +10,29 @@ class Program
     public static void Main()
     {
         // Game variables & vectors
-        const int CellWidth = 32;
-        const int Coloums = 25;
-        const int Rows = 25;
-        int bombCount = 100;
-        int LoopedTrough = 0;
-        int x = 0;
-        int y = 0;
-        double Time = 0;
-        int HintsUsed = 3;
-        int fieldsNotVisable = 0;
-        bool declared = false;
-        bool gameEnded = false;
-        bool gameWon = false;
-        bool gotOutputed = false;
-        bool CheatsUnlocked = false;
-        bool playing = true;
-        bool KIactive = false;
-        string surroundedBombs = "";
-        Color GridColor = Color.BLACK;
-        Color TextColour = Color.GREEN;
-        Vector2 mousePosition = new Vector2(-100.0f, -100.0f);
+        const int CellWidth = 35; /*-------------------------------------*/ // How big a cell is (pixels)                                                                      [field.CheckIfBomb(); | ShouldKiStart(); | Converting(); | DrawRectangle(); | DeclareFields(); | DrawFields(); | DrawGrid(); |GameOver(); | Win();]
+        const int Coloumns = 25; /*--------------------------------------*/ // How many coloumns one gamefield has                                                              [fields(); | ShouldKiStart(); | RandomizeBombs(); | CheckIfZero(); | Beginning(); | DrawFields(); | AreAllBombsRightDetected(); | IsClickedFieldZero(); | Help(); | DrawGrid();]
+        const int Rows = 25; /*------------------------------------------*/ // How many rows one gamefield has                                                                  [fields(); | RandomizeBombs(); | CheckIfZero(); | Beginning(); | DrawFields(); | AreAllBombsRightDetected(); | IsClickedFieldZero(); | Help(); | DrawGrid();]
+        int bombCount = Coloumns * Rows / 6; /*------------------------*/ // How many bombs are allowed in one game                                                           [field.CheckIfBomb(); | RandomizeBombs(); | AreAllBombsDetectedRight(); | CheckIfBombsAreRightDetected();]
+        int LoopedTrough = 0; /*-----------------------------------------*/ // How often sth. got looped through                                                                [Help();]
+        int x = 0; /*------------------------------------------------------*/ // Random generated x position                                                                      [Beginning(); | Help();]
+        int y = 0; /*------------------------------------------------------*/ // Random generated y position                                                                      [Beginning(); | Help();]
+        double Time = 0; /*-----------------------------------------------*/ // How long the user took until the game ended (because he lost or he won, both)                    [Win(); | GameOver();]
+        int HintsUsed = 3; /*---------------------------------------------*/ // How many hints the user can use                                                                  [Help();]
+        int fieldsNotVisable = 0; /*-------------------------------------*/ // [ShouldKiStart();]
+        bool declared = false; /*----------------------------------------*/ // If fields are already declared at the start [GameOver(); | Win();]
+        bool gameEnded = false; /*---------------------------------------*/ // If the game ends (by losing)                                                                     [field.CheckIfBomb() | CheckIfAllBombsAreRightDetected(); | GameOver(); | Win();] 
+        bool gameWon = false; /*------------------------------------------*/ // If the game ends (by winning)                                                                    [AreAllBombsRightDetected(); | GameOver(); | Win();]    
+        bool gotOutputed = false; /*-------------------------------------*/ // If the user wants to outpoot details about a field he hovers over with his mouse                 [----] 
+        bool CheatsUnlocked = false; /*----------------------------------*/ // If the user wants to get cheats outputted                                                        [OutPut();]
+        bool playing = true; /*-------------------------------------------*/ // If the gamemode is set to play (so that you can use the main game                                [field.CheckIfBomb(); | GameOver(); | Win();]
+        bool KIactive = false; /*-----------------------------------------*/ // If the algorythmn should be turned on                                                            [ShouldKiStart();]
+        string surroundedBombs = ""; /*----------------------------------*/ // Tells the program which number it should write on a field if it is visable and not a bomb        [DrawFields();]
+        Color GridColor = Color.BLACK; /*--------------------------------*/ // What the colour of the grid should be                                                            [DrawGrid();]
+        Color TextColour = Color.GREEN; /*-------------------------------*/ // What the text colour of the numbers on the field should be                                       [DrawFields();]
+        Vector2 mousePosition = new Vector2(-100.0f, -100.0f); /*-----*/ // Where the mouse is on the screen                                                                 [field.CheckIfBomb(); | Converting(); | DrawRectangle(); | DrawFields(); | IsClickedFieldZero(); | GameOver(); | Win(); | OutPut();]
 
-        Field[,] fields = new Field[Rows, Coloums];
+        Field[,] fields = new Field[Rows, Coloumns];
 
         // Objects
         Random r = new Random();
@@ -43,7 +43,7 @@ class Program
         // Lists
         List<Field> allFields = new List<Field>();
 
-        Raylib.InitWindow(800, 800, "MineSweeper");
+        Raylib.InitWindow(CellWidth * Rows, CellWidth * Coloumns, "MineSweeper");
 
         while (!Raylib.WindowShouldClose())
         {
@@ -68,33 +68,34 @@ class Program
 
                 if (declared == false)
                 {
-                    x = r.Next(24);
-                    y = r.Next(24);
+                    x = r.Next(Rows - 1);
+                    y = r.Next(Coloumns - 1);
                     DeclareFields(fields, CellWidth);
-                    RandomizeBombs(r, fields, bombCount);
-                    CheckIfZero(fields);
-                    Beginning(fields, r, ref x, ref y, true);
+                    RandomizeBombs(r, fields, bombCount, Coloumns, Rows);
+                    CheckIfZero(fields, Coloumns, Rows);
+                    Beginning(fields, r, Coloumns, Rows, ref x, ref y, true);
                     KIactive = true;
                     for (int i = 0; i < 20; i++)
                     {
-                        ShouldKIStart(fields, ref fieldsNotVisable, ref KIactive);
+                        ShouldKIStart(fields, ref fieldsNotVisable, Rows, Coloumns, ref KIactive);
                     }
                 }
 
-                DrawFields(fields, CellWidth, mousePosition, TextColour, ref surroundedBombs);
+                DrawFields(fields, mousePosition, TextColour, ref surroundedBombs, CellWidth, Coloumns, Rows);
 
-                field.CheckIfBomb(fields, mousePosition, ref field.visable, CellWidth, ref gameEnded, ref bombCount, ref playing);
-                AreAllBombsDetectedRight(fields, bombCount, ref gameWon);
+                field.CheckIfBomb(fields, mousePosition, ref field.visable, CellWidth, ref gameEnded, ref bombCount, Coloumns, Rows, ref playing);
 
-                ShouldKIStart(fields, ref fieldsNotVisable, ref KIactive);
+                AreAllBombsDetectedRight(fields, bombCount, Coloumns, Rows, ref gameWon);
 
-                isClickedFieldZero(fields, mousePosition, r);
+                ShouldKIStart(fields, ref fieldsNotVisable, Rows, Coloumns, ref KIactive);
 
-                Help(ref HintsUsed, r, fields, x, y, ref LoopedTrough);
+                IsClickedFieldZero(fields, mousePosition, r, Coloumns, Rows);
+
+                Help(r, fields, ref HintsUsed, ref LoopedTrough, Coloumns, Rows, x, y);
 
                 // CheckIfZero(fields);
 
-                DrawGrid(CellWidth, Coloums, Rows, GridColor);
+                DrawGrid(CellWidth, Coloumns, Rows, GridColor);
 
                 if (bombCount == 0)
                 {
@@ -123,9 +124,9 @@ class Program
                         declared = true;
                         KIactive = false;
                         gameWon = false;
-                        for (int i = 0; i < 25; i++)
+                        for (int i = 0; i < Rows; i++)
                         {
-                            for (int j = 0; j < 25; j++)
+                            for (int j = 0; j < Coloumns; j++)
                             {
                                 fields[i, j].gotClicked = false;
                                 fields[i, j].visable = false;
@@ -134,7 +135,7 @@ class Program
                                 fields[i, j].colour = Color.DARKGRAY;
                             }
                         }
-                        Beginning(fields, r, ref x, ref y, false);
+                        Beginning(fields, r, Coloumns, Rows, ref x, ref y, false);
                     }
                 }
             }
@@ -151,7 +152,7 @@ class Program
             {
                 playing = false;
                 Win(ref Time, CellWidth, mousePosition, ref playing, ref gameEnded, ref declared, ref gameWon);
-                Raylib.ClearBackground(Color.BLUE);
+                Raylib.ClearBackground(Color.GREEN);
                 KIactive = false;
                 HintsUsed = 3;
             }
@@ -163,9 +164,9 @@ class Program
                 // gotOutputed = true;
             }
 
-            for (int i = 0; i < 25; i++)
+            for (int i = 0; i < Coloumns; i++)
             {
-                for (int j = 0; j < 25; j++)
+                for (int j = 0; j < Rows; j++)
                 {
                     fields[i, j].bombDetecting = 0;
                 }
@@ -180,7 +181,7 @@ class Program
     public static void CheckIfBombsAreRightDetected(Field[,] fields, ref bool gameEnded, int bombCount)
     {
         int RightBombDetected = 0;
-        for (int x = 0;  x < fields.GetLength(0); x++)
+        for (int x = 0; x < fields.GetLength(0); x++)
         {
             for (int y = 0; y < fields.GetLength(1); y++)
             {
@@ -197,7 +198,6 @@ class Program
             gameEnded = true;
         }
     }
-
 
     public static void Converting(ref Vector2 mousePosition, int CellWidth)
     {
@@ -234,73 +234,73 @@ class Program
 
     }
 
-    public static void Help (ref int HintsUsed, Random r, Field[,] fields, int x, int y, ref int LoopedTrough)
+    public static void Help(Random r, Field[,] fields, ref int HintsUsed, ref int LoopedTrough, int Coloumns, int Rows, int x, int y)
     {
         if (HintsUsed != 0 && Raylib.IsKeyPressed(KeyboardKey.KEY_H))
         {
             if (LoopedTrough < 20)
-            { 
-            x = r.Next(24);
-            y = r.Next(24);
+            {
+                x = r.Next(Coloumns - 1);
+                y = r.Next(Rows - 1);
 
                 if (!fields[x, y].visable && fields[x, y].isZeroBombs)
                 {
-                fields[x, y].visable = true;
+                    fields[x, y].visable = true;
 
-                for (int dx = -1; dx <= 1; dx++)
-                {
-                    for (int dy = -1; dy <= 1; dy++)
+                    for (int dx = -1; dx <= 1; dx++)
                     {
-
-                        if ((x + dx < 0 || y + dy < 0) || (x + dx > 24 || y + dy > 24))
+                        for (int dy = -1; dy <= 1; dy++)
                         {
-                        }
-                        else
-                        {
-                            fields[x + dx, y + dy].visable = true;
-                            fields[x + dx, y + dy].colour = Color.DARKGREEN;
-                            
 
-                            if (fields[x + dx, y + dy].isZeroBombs && !fields[x + dx, y + dy].alreadyChecked)
+                            if ((x + dx < 0 || y + dy < 0) || (x + dx > Rows - 1 || y + dy > Coloumns - 1))
                             {
-                                fields[x + dx, y + dy].alreadyChecked = true;
-                                LoopedTrough = 0;
-                                int xx = x + dx;
-                                int yy = y + dy;
-                                Beginning(fields, r, ref xx, ref yy, false);
+                            }
+                            else
+                            {
+                                fields[x + dx, y + dy].visable = true;
+                                fields[x + dx, y + dy].colour = Color.DARKGREEN;
+
+
+                                if (fields[x + dx, y + dy].isZeroBombs && !fields[x + dx, y + dy].alreadyChecked)
+                                {
+                                    fields[x + dx, y + dy].alreadyChecked = true;
+                                    LoopedTrough = 0;
+                                    int xx = x + dx;
+                                    int yy = y + dy;
+                                    Beginning(fields, r, Coloumns, Rows, ref xx, ref yy, false);
+                                }
                             }
                         }
                     }
-                }
 
-                HintsUsed--;
+                    HintsUsed--;
                 }
                 else
                 {
                     if (LoopedTrough < 20)
                     {
                         LoopedTrough++;
-                        Help(ref HintsUsed, r, fields, x, y, ref LoopedTrough);
+                        Help(r, fields, ref HintsUsed, ref LoopedTrough, Coloumns, Rows, x, y);
                     }
                 }
             }
 
             else
             {
-                HelpWithoutZeros(ref HintsUsed, r, fields, x, y);
+                HelpWithoutZeros(fields, r, ref HintsUsed, Coloumns, Rows, x, y);
             }
         }
     }
 
-    public static void HelpWithoutZeros(ref int HintsUsed, Random r, Field[,] fields, int x, int y)
+    public static void HelpWithoutZeros(Field[,] fields, Random r, ref int HintsUsed, int Coloumns, int Rows, int x, int y)
     {
         bool OneFieldHintUsed = false;
         bool IsUsed = false;
 
         if (HintsUsed != 0)
         {
-            x = r.Next(25);
-            y = r.Next(25);
+            x = r.Next(Coloumns - 1);
+            y = r.Next(Rows - 1);
 
             if (!fields[x, y].visable && !fields[x, y].isBomb)
             {
@@ -329,17 +329,17 @@ class Program
                         }
                     }
                 }
-                
+
                 Console.WriteLine(HintsUsed);
             }
             if (!IsUsed)
             {
-                HelpWithoutZeros(ref HintsUsed, r, fields, x, y);
+                HelpWithoutZeros(fields, r, ref HintsUsed, Coloumns, Rows, x, y);
             }
         }
     }
 
-    public static void DrawFields(Field[,] fields, int CellWidth, Vector2 mousePosition, Color TextColour, ref string surroundedBombs)
+    public static void DrawFields(Field[,] fields, Vector2 mousePosition, Color TextColour, ref string surroundedBombs, int CellWidth, int Coloumns, int Rows)
     {
 
         for (int i = 0; i < fields.GetLength(0); i++)
@@ -347,37 +347,39 @@ class Program
             for (int j = 0; j < fields.GetLength(1); j++)
             {
 
-                CheckBombs(fields, i, j);
+                CheckBombs(fields, Coloumns, Rows, i, j);
 
                 Raylib.DrawRectangle(i * CellWidth, j * CellWidth, CellWidth, CellWidth, fields[i, j].colour);
-                
+
                 if (!fields[i, j].isBomb && fields[i, j].visable && !fields[i, j].bombDetected)
                 {
-                    surroundedBombs = fields[i,j].bombDetecting.ToString();
+                    surroundedBombs = fields[i, j].bombDetecting.ToString();
+
                     if (surroundedBombs == "0")
                     {
                         surroundedBombs = "";
                     }
+
                     Raylib.DrawText(surroundedBombs.ToString(), i * CellWidth + 8, j * CellWidth + 2, CellWidth, TextColour);
                 }
                 else
                 {
                     if (fields[i, j].gotClicked == true)
                     {
-                        CheckBombs(fields, i, j);
+                        CheckBombs(fields, Coloumns, Rows, i, j);
                     }
                 }
             }
         }
     }
 
-    public static void CheckBombs(Field[,] fields, int x, int y)
+    public static void CheckBombs(Field[,] fields, int Coloumns, int Rows, int x, int y)
     {
         for (int dx = -1; dx <= 1; dx++)
         {
             for (int dy = -1; dy <= 1; dy++)
             {
-                if (x + dx < 0 || y + dy < 0 || x + dx > 24 || y + dy > 24)
+                if (x + dx < 0 || y + dy < 0 || x + dx > Coloumns - 1 || y + dy > Rows - 1)
                 {
                 }
                 else
@@ -391,15 +393,15 @@ class Program
         }
     }
 
-    public static void CheckIfZero(Field[,] fields)
+    public static void CheckIfZero(Field[,] fields, int Coloumns, int Rows)
     {
-        for (int x = 0; x <= 24; x++)
+        for (int x = 0; x <= Rows - 1; x++)
         {
-            for (int y = 0; y <= 24; y++)
+            for (int y = 0; y <= Coloumns - 1; y++)
             {
-                CheckBombs(fields, x, y);
-                
-                if (fields[x,y].bombDetecting == 0)
+                CheckBombs(fields, Coloumns, Rows, x, y);
+
+                if (fields[x, y].bombDetecting == 0)
                 {
                     // fields[x, y].visable = true;
                     fields[x, y].isZeroBombs = true;
@@ -409,7 +411,7 @@ class Program
                     {
                         for (int dy = -1; dy <= 1; dy++)
                         {
-                            if ((x + dx < 0 || y + dy < 0) || (x + dx > 24 || y + dy > 24))
+                            if ((x + dx < 0 || y + dy < 0) || (x + dx > Coloumns - 1 || y + dy > Rows - 1))
                             {
                             }
                             else
@@ -424,14 +426,14 @@ class Program
         }
     }
 
-    public static void Beginning(Field[,] fields, Random r, ref int x, ref int y, bool firsttime)
+    public static void Beginning(Field[,] fields, Random r, int Coloumns, int Rows, ref int x, ref int y, bool firsttime)
     {
 
-        for (int i = 0; i < 24; i++)
+        for (int i = 0; i < Coloumns; i++) // Could be an mistake
         {
             if (fields[x, y].isZeroBombs)
             {
-                i = 25;
+                i = Coloumns;
                 fields[x, y].visable = true;
 
                 for (int dx = -1; dx <= 1; dx++)
@@ -439,71 +441,70 @@ class Program
                     for (int dy = -1; dy <= 1; dy++)
                     {
 
-                        if ((x + dx < 0 || y + dy < 0) || (x + dx > 24 || y + dy > 24))
+                        if ((x + dx < 0 || y + dy < 0) || (x + dx > Coloumns - 1 || y + dy > Rows - 1))
                         {
                         }
                         else
                         {
                             fields[x + dx, y + dy].visable = true;
                             fields[x + dx, y + dy].colour = Color.DARKGREEN;
-                            
+
                             if (fields[x + dx, y + dy].isZeroBombs && !fields[x + dx, y + dy].alreadyChecked)
                             {
                                 fields[x + dx, y + dy].alreadyChecked = true;
                                 int xx = x + dx;
                                 int yy = y + dy;
-                                Beginning(fields, r, ref xx, ref yy, false);
+                                Beginning(fields, r, Coloumns, Rows, ref xx, ref yy, false);
                             }
                         }
                     }
                 }
             }
-            else if (firsttime == true)
+            else if (firsttime)
             {
                 i--;
-                x = r.Next(24);
-                y = r.Next(24);
+                x = r.Next(Rows - 1);
+                y = r.Next(Coloumns - 1);
             }
         }
     }
 
-    public static void isClickedFieldZero(Field[,] fields, Vector2 mousePosition, Random r)
+    public static void IsClickedFieldZero(Field[,] fields, Vector2 mousePosition, Random r, int Coloumns, int Rows)
     {
-        if (mousePosition.X >= 0 && mousePosition.X < 25 && mousePosition.Y >= 0 && mousePosition.Y < 25)
+        if (mousePosition.X >= 0 && mousePosition.X < Rows && mousePosition.Y >= 0 && mousePosition.Y < Coloumns)
         {
             if (fields[(int)mousePosition.X, (int)mousePosition.Y].isZeroBombs && Raylib.IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_LEFT))
             {
                 int xx = (int)mousePosition.X;
                 int yy = (int)mousePosition.Y;
-                Beginning(fields, r, ref xx, ref yy, false);
+                Beginning(fields, r, Coloumns, Rows, ref xx, ref yy, false);
             }
         }
     }
 
-
-    public static void RandomizeBombs(Random r, Field[,] fields, int bombcount)
+    public static void RandomizeBombs(Random r, Field[,] fields, int bombcount, int Coloumns, int Rows)
     {
         for (int x = 1; x <= bombcount; x++)
         {
-            int y = r.Next(25);
-            int z = r.Next(25);
+            int z = r.Next(Rows); // Z is cursed
+            int y = r.Next(Coloumns);
 
             if (!fields[z, y].isBomb)
             {
                 fields[z, y].isBomb = true;
             }
-            else 
+            else
             {
                 x--;
             }
         }
     }
-    
-    public static void AreAllBombsDetectedRight(Field[,] fields, int bombCount, ref bool gameWin)
+
+    public static void AreAllBombsDetectedRight(Field[,] fields, int bombCount, int Coloumns, int Rows, ref bool gameWin)
     {
-        for(int x = 0;x <= 24; x++)
+        for (int x = 0; x <= Rows - 1; x++)
         {
-            for (int y = 0; y <= 24; y++)
+            for (int y = 0; y <= Coloumns - 1; y++)
             {
                 if (fields[x, y].isBomb && fields[x, y].bombDetected)
                 {
@@ -536,7 +537,7 @@ class Program
 
     public static void TimeRound(ref double Time)
     {
-        Time = (int) Time;
+        Time = (int)Time;
     }
 
     public static void Button(int CellWidth, Vector2 mousePosition, ref bool playing, ref bool gameEnded, ref bool declared, ref double Time, ref bool gameWon)
@@ -579,7 +580,7 @@ class Program
             if (mousePosition.X >= 0 && mousePosition.X < 25 && mousePosition.Y >= 0 && mousePosition.Y < 25)
             {
                 Console.Write((int)mousePosition.X + " | " + (int)mousePosition.Y + " || ");
-                Console.Write(fields[(int)mousePosition.X, (int)mousePosition.Y].visable + " | " + fields[(int)mousePosition.X, (int)mousePosition.Y].isBomb + " | " + fields[(int)mousePosition.X, (int)mousePosition.Y].bombDetected + " | " + fields[(int)mousePosition.X, (int)mousePosition.Y].isZeroBombs );
+                Console.Write(fields[(int)mousePosition.X, (int)mousePosition.Y].visable + " | " + fields[(int)mousePosition.X, (int)mousePosition.Y].isBomb + " | " + fields[(int)mousePosition.X, (int)mousePosition.Y].bombDetected + " | " + fields[(int)mousePosition.X, (int)mousePosition.Y].isZeroBombs);
                 Console.WriteLine(" ||| " + "[X-Coordinate | Y-Coordinate || Visable | isBomb | isBombDetected | NoBombs]");
             }
         }
@@ -606,7 +607,7 @@ class Program
 
     // Defenetly not the Start of a KI which can play the full game to the end
 
-    public static void ShouldKIStart(Field[,] fields, ref int fieldsNotVisable, ref bool KIactive)
+    public static void ShouldKIStart(Field[,] fields, ref int fieldsNotVisable, int Rows, int Coloumns, ref bool KIactive)
     {
         if (Raylib.IsKeyPressed(KeyboardKey.KEY_K) && KIactive == false)
         {
@@ -617,33 +618,33 @@ class Program
             KIactive = false;
         }
 
-        
+
         if (KIactive == true)
         {
-            for(int x = 0; x < 25; x++)
+            for (int x = 0; x < Rows; x++)
             {
-                for (int y = 0; y < 25; y++)
+                for (int y = 0; y < Coloumns; y++)
                 {
                     if (fields[x, y].visable && !fields[x, y].bombDetected)
                     {
-                        NotVisableFieldsEqualsNumber(fields, ref fieldsNotVisable, x, y);
-                        OtherFieldsVisable(fields, x, y);
+                        NotVisableFieldsEqualsNumber(fields, ref fieldsNotVisable, Coloumns, Rows, x, y);
+                        OtherFieldsVisable(fields, Coloumns, Rows, x, y);
                     }
                 }
             }
         }
     }
 
-    public static void NotVisableFieldsEqualsNumber(Field[,] fields,ref int fieldsNotVisable, int x, int y)
+    public static void NotVisableFieldsEqualsNumber(Field[,] fields, ref int fieldsNotVisable, int Coloumns, int Rows, int x, int y)
     {
         fieldsNotVisable = 0;
-        
+
         for (int dx = -1; dx <= 1; dx++)
         {
             for (int dy = -1; dy <= 1; dy++)
             {
 
-                if ((x + dx < 0 || y + dy < 0) || (x + dx > 24 || y + dy > 24))
+                if ((x + dx < 0 || y + dy < 0) || (x + dx > Rows - 1 || y + dy > Coloumns - 1))
                 {
                 }
                 else if (!fields[x + dx, y + dy].visable || fields[x + dx, y + dy].bombDetected)
@@ -653,14 +654,14 @@ class Program
             }
         }
 
-        if (fieldsNotVisable == fields[x,y].bombDetecting && fields[x, y].bombDetecting != 0)
+        if (fieldsNotVisable == fields[x, y].bombDetecting && fields[x, y].bombDetecting != 0)
         {
             for (int dx = -1; dx <= 1; dx++)
             {
                 for (int dy = -1; dy <= 1; dy++)
                 {
 
-                    if ((x + dx < 0 || y + dy < 0) || (x + dx > 24 || y + dy > 24))
+                    if ((x + dx < 0 || y + dy < 0) || (x + dx > Rows - 1 || y + dy > Coloumns - 1))
                     {
                     }
                     else if (!fields[x + dx, y + dy].visable)
@@ -668,22 +669,22 @@ class Program
                         fields[x + dx, y + dy].bombDetected = true;
                         fields[x + dx, y + dy].visable = true;
                     }
-                    
+
                 }
             }
         }
     }
 
-    public static void OtherFieldsVisable(Field[,] fields, int x, int y)
+    public static void OtherFieldsVisable(Field[,] fields, int Coloumns, int Rows, int x, int y)
     {
         int BombCount = 0;
-        
+
         for (int dx = -1; dx <= 1; dx++)
         {
             for (int dy = -1; dy <= 1; dy++)
             {
 
-                if ((x + dx < 0 || y + dy < 0) || (x + dx > 24 || y + dy > 24))
+                if ((x + dx < 0 || y + dy < 0) || (x + dx > Rows - 1 || y + dy > Coloumns - 1))
                 {
                 }
                 else if (fields[x + dx, y + dy].bombDetected)
@@ -700,7 +701,7 @@ class Program
                 for (int dy = -1; dy <= 1; dy++)
                 {
 
-                    if ((x + dx < 0 || y + dy < 0) || (x + dx > 24 || y + dy > 24))
+                    if ((x + dx < 0 || y + dy < 0) || (x + dx > Rows - 1 || y + dy > Coloumns - 1))
                     {
                     }
                     else if (!fields[x + dx, y + dy].visable)
@@ -713,7 +714,6 @@ class Program
             }
         }
     }
-
 
     enum Gamemode
     {

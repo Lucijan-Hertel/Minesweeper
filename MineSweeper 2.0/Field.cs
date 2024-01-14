@@ -36,7 +36,7 @@ namespace MineSweeper_2._0
             this.bombDetecting = bombDetecting;
         }
 
-        public void CheckIfBomb(Field[,] fields, Vector2 mousePosition, ref bool visable, int CellWidth, ref bool gameEnded, ref int bombCount, ref bool playing)
+        public void CheckIfBomb(Field[,] fields, Vector2 mousePosition, ref bool visable, int CellWidth, ref bool gameEnded, ref int bombCount, int Coloumns, int Rows, ref bool playing)
         {
             if (Raylib.IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_LEFT))
             {
@@ -51,35 +51,36 @@ namespace MineSweeper_2._0
                     fields[(int)mousePosition.X, (int)mousePosition.Y].visable = true;
                     fields[(int)mousePosition.X, (int)mousePosition.Y].colour = Color.DARKGREEN;
                 }
-                fields[(int) mousePosition.X, (int) mousePosition.Y].gotClicked = true;
+                fields[(int)mousePosition.X, (int)mousePosition.Y].gotClicked = true;
             }
-            for (int x = 0; x < 25; x++)
-            {
-                for (int y = 0; y < 25; y++)
-                {
-                    if (Raylib.IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_RIGHT))
-                    {
-                        if (!fields[(int)mousePosition.X, (int)mousePosition.Y].visable)
-                        {
-                            fields[(int)mousePosition.X, (int)mousePosition.Y].visable = true;
-                            fields[(int)mousePosition.X, (int)mousePosition.Y].colour = Color.BLUE;
-                            fields[(int)mousePosition.X, (int)mousePosition.Y].bombDetected = true;
-                        }
-                        else if (fields[(int)mousePosition.X, (int)mousePosition.Y].bombDetected == true)
-                        {
-                            fields[(int)mousePosition.X, (int)mousePosition.Y].bombDetected = false;
-                            fields[(int)mousePosition.X, (int)mousePosition.Y].colour = Color.DARKGRAY;
-                            fields[(int)mousePosition.X, (int)mousePosition.Y].visable = false;
-                        }
-                        fields[(int)mousePosition.X, (int)mousePosition.Y].gotClicked = true;
-                    }
 
+            if (Raylib.IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_RIGHT))
+            {
+                if (!fields[(int)mousePosition.X, (int)mousePosition.Y].visable)
+                {
+                    fields[(int)mousePosition.X, (int)mousePosition.Y].visable = true;
+                    fields[(int)mousePosition.X, (int)mousePosition.Y].colour = Color.BLUE;
+                    fields[(int)mousePosition.X, (int)mousePosition.Y].bombDetected = true;
+                }
+                else if (fields[(int)mousePosition.X, (int)mousePosition.Y].bombDetected == true)
+                {
+                    fields[(int)mousePosition.X, (int)mousePosition.Y].bombDetected = false;
+                    fields[(int)mousePosition.X, (int)mousePosition.Y].colour = Color.DARKGRAY;
+                    fields[(int)mousePosition.X, (int)mousePosition.Y].visable = false;
+                }
+                fields[(int)mousePosition.X, (int)mousePosition.Y].gotClicked = true;
+            }
+
+            for (int x = 0; x < Rows; x++)
+            {
+                for (int y = 0; y < Coloumns; y++)
+                {
                     if (fields[x, y].bombDetected)
                     {
-                        fields[x,y].visable = true;
-                        fields[x,y].colour = Color.BLUE;
-                        fields[x,y].bombDetected = true;
-                        fields[x,y].gotClicked = true;
+                        fields[x, y].visable = true;
+                        fields[x, y].colour = Color.BLUE;
+                        fields[x, y].bombDetected = true;
+                        fields[x, y].gotClicked = true;
                     }
                 }
             }
